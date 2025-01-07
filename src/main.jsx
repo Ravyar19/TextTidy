@@ -17,7 +17,7 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
-import LandingPage from "./components/LandingPage.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
