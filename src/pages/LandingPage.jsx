@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import HeroSection from "../components/HeroSection";
 import Testimonial from "../components/Testimonial";
+import CTASection from "../components/CTASection";
 
 const LandingPage = () => {
   return (
@@ -9,6 +10,7 @@ const LandingPage = () => {
       <Navbar />
       <HeroSection />
       <Testimonial />
+      <CTASection />
     </div>
   );
 };
