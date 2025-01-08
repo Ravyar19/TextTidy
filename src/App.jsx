@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-function App() {
-  return <></>;
-=======
 import { useEffect } from "react";
 import {
   SignedIn,
@@ -97,7 +93,6 @@ function App() {
       />
     </Routes>
   );
->>>>>>> master
 }
 
 export default App;
