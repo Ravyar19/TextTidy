@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
+<<<<<<< HEAD
 import {
   ClerkProvider,
   RedirectToSignIn,
@@ -18,6 +19,10 @@ import {
   Navigate,
 } from "react-router-dom";
 import LandingPage from "./pages/LandingPage.jsx";
+=======
+import { ClerkProvider } from "@clerk/clerk-react";
+import { BrowserRouter } from "react-router-dom";
+>>>>>>> master
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -29,6 +34,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <BrowserRouter>
+<<<<<<< HEAD
         <Routes>
           {/* Public landing page */}
           <Route
@@ -71,6 +77,9 @@ createRoot(document.getElementById("root")).render(
             <Route path="settings" element={<Settings />} />
           </Route> */}
         </Routes>
+=======
+        <App />
+>>>>>>> master
       </BrowserRouter>
     </ClerkProvider>
   </StrictMode>
