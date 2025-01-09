@@ -9,6 +9,7 @@ import {
 import { Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import FileUpload from "./pages/FileUpload";
+import DocumentAnalysis from "./pages/DocumentAnalysis";
 
 function App() {
   const { isLoaded, user } = useUser();
@@ -53,12 +54,7 @@ function App() {
         element={
           <div className="min-h-screen flex items-center justify-center bg-gray-50">
             <div className="w-full max-w-md p-8">
-              <SignUp
-                routing="path"
-                path="/sign-up"
-                afterSignUpUrl="/upload"
-                signInUrl="/sign-in"
-              />
+              <SignUp routing="path" path="/sign-up" signInUrl="/sign-in" />
             </div>
           </div>
         }
@@ -89,6 +85,14 @@ function App() {
           <SignedOut>
             <Navigate to="/" replace />
           </SignedOut>
+        }
+      />
+      <Route
+        path="/analysis"
+        element={
+          <SignedIn>
+            <DocumentAnalysis />
+          </SignedIn>
         }
       />
     </Routes>

@@ -1,7 +1,10 @@
 import { FileText, X } from "lucide-react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function FileUpload() {
+  const navigate = useNavigate();
+
   const [file, setFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -32,6 +35,12 @@ function FileUpload() {
     if (selectedFile) {
       console.log("Selected file:", selectedFile.name);
       setFile(selectedFile);
+    }
+  };
+
+  const handleNext = () => {
+    if (file) {
+      navigate("/analysis", { state: { file } });
     }
   };
 
@@ -148,6 +157,7 @@ function FileUpload() {
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             disabled={!file}
+            onClick={handleNext}
           >
             Next
           </button>
