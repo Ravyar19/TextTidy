@@ -10,6 +10,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import FileUpload from "./pages/FileUpload";
 import DocumentAnalysis from "./pages/DocumentAnalysis";
+import QuizGenerator from "./components/QuizGenerator";
 
 function App() {
   const { isLoaded, user } = useUser();
@@ -31,7 +32,6 @@ function App() {
     <Routes>
       {/* Public landing page */}
       <Route path="/" element={<LandingPage />} />
-
       {/* Auth routes */}
       <Route
         path="/sign-in"
@@ -48,7 +48,6 @@ function App() {
           </div>
         }
       />
-
       <Route
         path="/sign-up"
         element={
@@ -59,7 +58,47 @@ function App() {
           </div>
         }
       />
-
+      <Route
+        path="/analysis"
+        element={
+          <SignedIn>
+            <DocumentAnalysis />
+          </SignedIn>
+        }
+      />
+      <Route
+        path="/analysis/quiz"
+        element={
+          <SignedIn>
+            <QuizGenerator />
+          </SignedIn>
+        }
+      />
+      {/* 
+      <Route
+        path="/analysis/chat"
+        element={
+          <SignedIn>
+            <ChatInterface />
+          </SignedIn>
+        }
+      />
+      <Route
+        path="/analysis/summary"
+        element={
+          <SignedIn>
+            <Summary />
+          </SignedIn>
+        }
+      />
+      <Route
+        path="/analysis/concepts"
+        element={
+          <SignedIn>
+            <Concepts />
+          </SignedIn>
+        }
+      /> */}
       {/* Protected routes */}
       <Route
         path="/upload"
@@ -69,7 +108,6 @@ function App() {
           </SignedIn>
         }
       />
-
       {/* Fallback routes */}
       <Route
         path="*"
@@ -85,14 +123,6 @@ function App() {
           <SignedOut>
             <Navigate to="/" replace />
           </SignedOut>
-        }
-      />
-      <Route
-        path="/analysis"
-        element={
-          <SignedIn>
-            <DocumentAnalysis />
-          </SignedIn>
         }
       />
     </Routes>

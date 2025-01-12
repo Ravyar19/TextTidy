@@ -1,10 +1,12 @@
 import { FileText } from "lucide-react";
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Book, Brain, MessageSquare, Search, List } from "lucide-react";
 
 function DocumentAnalysis() {
   const [selectedTool, setSelectedTool] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const tools = [
     {
@@ -12,34 +14,52 @@ function DocumentAnalysis() {
       icon: Book,
       title: "Lecture Summary",
       description: "Get a concise overview of key points",
+      path: "/analysis/summary",
     },
     {
       id: "quiz",
       icon: Brain,
       title: "Quiz Generator",
       description: "Create practice questions from content",
+      path: "/analysis/quiz",
     },
     {
       id: "chat",
       icon: MessageSquare,
       title: "Ask Questions",
       description: "Chat with your document",
+      path: "/analysis/chat",
     },
     {
       id: "search",
       icon: Search,
       title: "Smart Search",
       description: "Find specific information quickly",
+      path: "/analysis/search",
     },
     {
       id: "concepts",
       icon: List,
       title: "Key Concepts",
       description: "Extract main ideas and terms",
+      path: "/analysis/concepts",
     },
   ];
 
-  const location = useLocation();
+  const handleAnalyze = () => {
+    if (!selectedTool) return;
+
+    const tool = tools.find((t) => t.id === selectedTool);
+    if (tool) {
+      navigate(tool.path, {
+        state: {
+          file,
+          from: location.pathname,
+        },
+      });
+    }
+  };
+
   const file = location.state?.file;
   return (
     <div className="min-h-screen bg-gray-50">
@@ -70,13 +90,21 @@ function DocumentAnalysis() {
             </button>
           ))}
         </div>
-        <div
-          disabled={!selectedTool}
-          className={`px-6 py-3 rounded-lg text-white font-medium ${
-            selectedTool ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400"
-          }`}
-        >
-          <button>Analyze Document</button>
+        <div className="flex justify-end">
+          <button
+            onClick={handleAnalyze}
+            disabled={!selectedTool}
+            className={`
+              px-6 py-3 rounded-lg text-white font-medium
+              ${
+                selectedTool
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              }
+            `}
+          >
+            Analyze Document
+          </button>
         </div>
       </div>
     </div>
