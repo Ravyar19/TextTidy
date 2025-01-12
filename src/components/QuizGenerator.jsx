@@ -2,6 +2,25 @@ import { AlertCircle, Book, Loader, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+const ScoreDisplay = ({ questions, userAnswers }) => {
+  const totalQuestions = questions.length;
+  const correctAnswers = questions.filter(
+    (q) => userAnswers[q.id] === q.correctAnswer
+  ).length;
+  const score = (correctAnswers / totalQuestions) * 100;
+
+  return (
+    <div>
+      <div className="text-4xl font-bold text-blue-600 mb-2">
+        {score.toFixed(0)}%
+      </div>
+      <p className="text-gray-600">
+        You got {correctAnswers} out of {totalQuestions} questions correct
+      </p>
+    </div>
+  );
+};
+
 function QuizGenerator() {
   const location = useLocation();
   const file = location.state?.file;
@@ -85,26 +104,27 @@ function QuizGenerator() {
     readFile();
   }, [file]);
 
+  // Update this part in the generatePrompt function
   const generatePrompt = (content, settings) => {
     return `Create ${settings.numberOfQuestions} ${
       settings.questionType
-    } questions based on this uploaded document: 
-    ${content.slice(0, 6000)}
-    return a JSON object with a "questions" array. Each question object should have:
-    {
-    "question":"The question text",
-    "options":["Option A","Option B","Option C","Option D"], // for multiple choice
-    "correctAnswer":0 // index of the correct answer
-    "explanation":"Brief explanation of the answer"
-    }
+    } questions based on this content: 
 
-    for true/false questions, provide only two options:["True","False"].
-    Focus on key concepts and important details from the content.
-    Make questions clear and unambiguous.
-    Ensure all options are plausible but only one is correct.
-    `;
+  ${content.slice(0, 6000)}
+
+  Return a JSON object with a "questions" array. Each question object should have:
+  {
+    "question": "The question text",
+    "options": ["option1", "option2", "option3", "option4"], // For multiple choice
+    "correctAnswer": 0, // Index of correct option (0-based)
+    "explanation": "Brief explanation of why this answer is correct"
+  }
+
+  For true/false questions, provide only two options: ["True", "False"].
+  Focus on key concepts and important details from the content.
+  Make questions clear and unambiguous.
+  Ensure all options are plausible but only one is correct.`;
   };
-
   const generateQuiz = async () => {
     setCurrentStep("generating");
     setError(null);
@@ -338,14 +358,101 @@ function QuizGenerator() {
               </div>
             ) : (
               <div className="space-y-8">
+                {/* Score Display */}
                 <div className="text-center p-6 bg-gray-50 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-6">Quiz Results</h3>
+                  <h3 className="text-2xl font-semibold mb-4">Quiz Results</h3>
+                  <ScoreDisplay
+                    questions={questions}
+                    userAnswers={userAnswers}
+                  />
+                </div>
 
-                  {/* Score Calc */}
+                {/* Question Review */}
+                <div className="space-y-6">
+                  <h4 className="text-xl font-medium">Question Review</h4>
+                  {questions.map((question) => (
+                    <div
+                      key={question.id}
+                      className={`p-6 rounded-lg border ${
+                        userAnswers[question.id] === question.correctAnswer
+                          ? "bg-green-50 border-green-200"
+                          : "bg-red-50 border-red-200"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <h5 className="font-medium">Question {question.id}</h5>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm ${
+                            userAnswers[question.id] === question.correctAnswer
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {userAnswers[question.id] === question.correctAnswer
+                            ? "Correct"
+                            : "Incorrect"}
+                        </span>
+                      </div>
 
-                  {() => {
-                    const totalQuestions = questions.length;
-                  }}
+                      <p className="mb-4">{question.question}</p>
+
+                      <div className="space-y-2 mb-4">
+                        {question.options.map((option, idx) => (
+                          <div
+                            key={idx}
+                            className={`p-3 rounded ${
+                              idx === question.correctAnswer
+                                ? "bg-green-100 border border-green-200"
+                                : idx === userAnswers[question.id]
+                                ? "bg-red-100 border border-red-200"
+                                : "bg-gray-50 border border-gray-200"
+                            }`}
+                          >
+                            {option}
+                            {idx === question.correctAnswer && (
+                              <span className="ml-2 text-green-600 text-sm">
+                                (Correct Answer)
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {question.explanation && (
+                        <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                          <p className="text-sm text-blue-800">
+                            <span className="font-medium">Explanation: </span>
+                            {question.explanation}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-between pt-6">
+                  <button
+                    onClick={() => {
+                      setCurrentQuestionIndex(0);
+                      setUserAnswers({});
+                      setShowResults(false);
+                    }}
+                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  >
+                    Try Again
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCurrentStep("settings");
+                      setShowResults(false);
+                      setUserAnswers({});
+                      setQuestions([]);
+                    }}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    New Quiz
+                  </button>
                 </div>
               </div>
             )}
