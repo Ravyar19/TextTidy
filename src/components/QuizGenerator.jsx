@@ -1,5 +1,5 @@
-import { Book, Loader, Settings } from "lucide-react";
-import { useState } from "react";
+import { AlertCircle, Book, Loader, Settings } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 function QuizGenerator() {
@@ -25,21 +25,146 @@ function QuizGenerator() {
     }));
   };
 
-  const generateQuiz = () => {
+  const [error, setError] = useState(null);
+  const [fileContent, setFileContent] = useState(null);
+
+  useEffect(() => {
+    const readFile = async () => {
+      if (!file) return;
+
+      try {
+        // For PDFs, we need to get the raw data first
+        const reader = new FileReader();
+
+        reader.onload = async (e) => {
+          // If it's a PDF
+          if (file.type === "application/pdf") {
+            const pdfData = new Uint8Array(e.target.result);
+            const pdfjsLib = window.pdfjsLib;
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
+
+            try {
+              const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+              let fullText = "";
+
+              // Get all pages text
+              for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const textItems = textContent.items.map((item) => item.str);
+                fullText += textItems.join(" ") + "\n";
+              }
+
+              setFileContent(fullText);
+            } catch (pdfError) {
+              console.error("Error parsing PDF:", pdfError);
+              setError("Failed to read PDF content");
+            }
+          } else {
+            // For non-PDF files, use text content directly
+            setFileContent(e.target.result);
+          }
+        };
+
+        reader.onerror = (error) => {
+          console.error("Error reading file:", error);
+          setError("Failed to read the file");
+        };
+
+        // Read as array buffer for PDFs, as text for others
+        if (file.type === "application/pdf") {
+          reader.readAsArrayBuffer(file);
+        } else {
+          reader.readAsText(file);
+        }
+      } catch (error) {
+        console.error("Error reading file", error);
+        setError("An error occurred while reading the file");
+      }
+    };
+    readFile();
+  }, [file]);
+
+  const generatePrompt = (content, settings) => {
+    return `Create ${settings.numberOfQuestions} ${
+      settings.questionType
+    } questions based on this uploaded document: 
+    ${content.slice(0, 6000)}
+    return a JSON object with a "questions" array. Each question object should have:
+    {
+    "question":"The question text",
+    "options":["Option A","Option B","Option C","Option D"], // for multiple choice
+    "correctAnswer":0 // index of the correct answer
+    "explanation":"Brief explanation of the answer"
+    }
+
+    for true/false questions, provide only two options:["True","False"].
+    Focus on key concepts and important details from the content.
+    Make questions clear and unambiguous.
+    Ensure all options are plausible but only one is correct.
+    `;
+  };
+
+  const generateQuiz = async () => {
     setCurrentStep("generating");
-    // Here we'll add the API integration later
-    setTimeout(() => {
-      setCurrentStep("quiz");
-      // Temporary mock questions
-      setQuestions([
+    setError(null);
+
+    if (!fileContent) {
+      setError("No file content found");
+      setCurrentStep("settings");
+      return;
+    }
+    try {
+      const prompt = generatePrompt(fileContent, quizSettings);
+      const response = await fetch(
+        "https://api.openai.com/v1/chat/completions",
         {
-          id: 1,
-          question: "Sample question 1?",
-          options: ["Option A", "Option B", "Option C", "Option D"],
-          correctAnswer: 0,
-        },
-      ]);
-    }, 2000);
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo-0125",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a quiz generator. Generate questions based on the provided content. Return only valid JSON without any additional text or explanation. ",
+              },
+              {
+                role: "user",
+                content: prompt,
+              },
+            ],
+            temperature: 0.3,
+            response_format: { type: "json_object" },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", errorData); // This will help debug the issue
+        throw new Error(errorData.error?.message || "Failed to generate quiz");
+      }
+
+      const data = await response.json();
+      const generatedQuestions = data.choices[0].message.content;
+      const parsedQuestions = JSON.parse(generatedQuestions).questions;
+
+      setQuestions(
+        parsedQuestions.map((q, index) => ({
+          ...q,
+          id: index + 1,
+        }))
+      );
+      setCurrentStep("quiz");
+    } catch (error) {
+      console.error("Error generating quiz:", error);
+      setError(error.message || "An error occurred while generating the quiz");
+      setCurrentStep("settings");
+    }
   };
 
   const handleAnswerSelect = (questionId, answerIndex) => {
@@ -108,6 +233,14 @@ function QuizGenerator() {
               >
                 Generate Quiz
               </button>
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="w-5 h-5 text-red-500" />
+              <p className="text-red-600">{error}</p>
             </div>
           </div>
         )}
@@ -204,9 +337,16 @@ function QuizGenerator() {
                 </div>
               </div>
             ) : (
-              <div>
-                <h3 className="text-xl font-semibold mb-6">Quiz Results</h3>
-                {/* Results UI will be implemented later */}
+              <div className="space-y-8">
+                <div className="text-center p-6 bg-gray-50 rounded-lg">
+                  <h3 className="text-xl font-semibold mb-6">Quiz Results</h3>
+
+                  {/* Score Calc */}
+
+                  {() => {
+                    const totalQuestions = questions.length;
+                  }}
+                </div>
               </div>
             )}
           </div>
