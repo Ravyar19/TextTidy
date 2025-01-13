@@ -11,6 +11,7 @@ import LandingPage from "./pages/LandingPage";
 import FileUpload from "./pages/FileUpload";
 import DocumentAnalysis from "./pages/DocumentAnalysis";
 import QuizGenerator from "./components/QuizGenerator";
+import Summary from "./components/Summary";
 
 function App() {
   const { isLoaded, user } = useUser();
@@ -74,6 +75,14 @@ function App() {
           </SignedIn>
         }
       />
+      <Route
+        path="/analysis/summary"
+        element={
+          <SignedIn>
+            <Summary />
+          </SignedIn>
+        }
+      />
       {/* 
       <Route
         path="/analysis/chat"
@@ -83,14 +92,7 @@ function App() {
           </SignedIn>
         }
       />
-      <Route
-        path="/analysis/summary"
-        element={
-          <SignedIn>
-            <Summary />
-          </SignedIn>
-        }
-      />
+    
       <Route
         path="/analysis/concepts"
         element={
