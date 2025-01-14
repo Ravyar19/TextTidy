@@ -12,6 +12,7 @@ import FileUpload from "./pages/FileUpload";
 import DocumentAnalysis from "./pages/DocumentAnalysis";
 import QuizGenerator from "./components/QuizGenerator";
 import Summary from "./components/Summary";
+import Chat from "./components/Chat";
 
 function App() {
   const { isLoaded, user } = useUser();
@@ -83,15 +84,16 @@ function App() {
           </SignedIn>
         }
       />
-      {/* 
       <Route
         path="/analysis/chat"
         element={
           <SignedIn>
-            <ChatInterface />
+            <Chat />
           </SignedIn>
         }
       />
+      {/* 
+  
     
       <Route
         path="/analysis/concepts"
