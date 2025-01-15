@@ -1,10 +1,9 @@
 import { AlertCircle, Book, FileText, List, Loader } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 
 function Summary() {
-  const location = useLocation();
-  const file = location.state?.file;
+  const { file } = useFile();
+
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fileContent, setFileContent] = useState(null);

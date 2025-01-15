@@ -1,6 +1,5 @@
 import { AlertCircle, Book, Loader, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 
 const ScoreDisplay = ({ questions, userAnswers }) => {
   const totalQuestions = questions.length;
@@ -22,8 +21,7 @@ const ScoreDisplay = ({ questions, userAnswers }) => {
 };
 
 function QuizGenerator() {
-  const location = useLocation();
-  const file = location.state?.file;
+  const { file } = useFile();
 
   const [quizSettings, setQuizSettings] = useState({
     numberOfQuestions: 5,

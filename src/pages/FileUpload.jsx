@@ -1,11 +1,12 @@
 import { FileText, X } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useFile } from "../Context/FileContext";
 
 function FileUpload() {
   const navigate = useNavigate();
+  const { file, setFile } = useFile();
 
-  const [file, setFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
 
   const handleDrag = (e) => {

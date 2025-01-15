@@ -2,11 +2,14 @@ import { FileText } from "lucide-react";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Book, Brain, MessageSquare, Search, List } from "lucide-react";
+import { useFile } from "../Context/FileContext";
 
 function DocumentAnalysis() {
   const [selectedTool, setSelectedTool] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { file } = useFile();
 
   const tools = [
     {
@@ -60,7 +63,6 @@ function DocumentAnalysis() {
     }
   };
 
-  const file = location.state?.file;
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">

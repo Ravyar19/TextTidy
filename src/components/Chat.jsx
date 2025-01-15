@@ -1,12 +1,13 @@
 import { AlertCircle, Book, Loader, Send } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useFile } from "../Context/FileContext";
 
 function Chat() {
-  const location = useLocation();
-  const file = location.state?.file;
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
+  const { file } = useFile();
+
   const [messages, setMessages] = useState([
     {
       role: "system",

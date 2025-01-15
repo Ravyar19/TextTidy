@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Book, Search, Loader, AlertCircle, ArrowRight } from "lucide-react";
 
 function SmartSearch() {
-  const location = useLocation();
-  const file = location.state?.file;
+  const { file } = useFile();
+
   const navigate = useNavigate();
 
   const [query, setQuery] = useState("");

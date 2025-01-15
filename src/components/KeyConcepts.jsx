@@ -8,11 +8,11 @@ import {
   Tag,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function KeyConcepts() {
-  const location = useLocation();
-  const file = location.state?.file;
+  const { file } = useFile();
+
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
