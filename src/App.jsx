@@ -13,6 +13,7 @@ import DocumentAnalysis from "./pages/DocumentAnalysis";
 import QuizGenerator from "./components/QuizGenerator";
 import Summary from "./components/Summary";
 import Chat from "./components/Chat";
+import SmartSearch from "./components/SmartSearch";
 
 function App() {
   const { isLoaded, user } = useUser();
@@ -92,17 +93,16 @@ function App() {
           </SignedIn>
         }
       />
-      {/* 
-  
-    
+
       <Route
-        path="/analysis/concepts"
+        path="/analysis/search"
         element={
           <SignedIn>
-            <Concepts />
+            <SmartSearch />
           </SignedIn>
         }
-      /> */}
+      />
+
       {/* Protected routes */}
       <Route
         path="/upload"
