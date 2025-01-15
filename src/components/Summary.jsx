@@ -1,5 +1,6 @@
 import { AlertCircle, Book, FileText, List, Loader } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useFile } from "../Context/FileContext";
 
 function Summary() {
   const { file } = useFile();

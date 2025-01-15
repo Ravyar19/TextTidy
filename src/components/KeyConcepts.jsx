@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useFile } from "../Context/FileContext";
 
 function KeyConcepts() {
   const { file } = useFile();

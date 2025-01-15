@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Book, Search, Loader, AlertCircle, ArrowRight } from "lucide-react";
+import { useFile } from "../Context/FileContext";
 
 function SmartSearch() {
   const { file } = useFile();

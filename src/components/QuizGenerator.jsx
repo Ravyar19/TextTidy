@@ -1,5 +1,6 @@
 import { AlertCircle, Book, Loader, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useFile } from "../Context/FileContext";
 
 const ScoreDisplay = ({ questions, userAnswers }) => {
   const totalQuestions = questions.length;
