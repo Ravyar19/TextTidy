@@ -14,6 +14,7 @@ import QuizGenerator from "./components/QuizGenerator";
 import Summary from "./components/Summary";
 import Chat from "./components/Chat";
 import SmartSearch from "./components/SmartSearch";
+import KeyConcepts from "./components/KeyConcepts";
 
 function App() {
   const { isLoaded, user } = useUser();
@@ -99,6 +100,14 @@ function App() {
         element={
           <SignedIn>
             <SmartSearch />
+          </SignedIn>
+        }
+      />
+      <Route
+        path="/analysis/concepts"
+        element={
+          <SignedIn>
+            <KeyConcepts />
           </SignedIn>
         }
       />
